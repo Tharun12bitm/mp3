@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+scipy
+numpy
+mido
+httpx
+pytest
+playwright

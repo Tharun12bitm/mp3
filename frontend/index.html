@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Audio to MIDI Studio | Convert MP3 to MIDI & Immediate Download</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1 class="logo-title">MidiPulse</h1>
+          <p class="logo-subtitle">MP3 to MIDI File System & Instant Downloader</p>
+        </div>
+      </div>
+      <div class="stats-pills" id="statsPills">
+        <span class="badge"><strong id="statsTotalFiles">0</strong> Files</span>
+        <span class="badge"><strong id="statsTotalNotes">0</strong> Notes Detected</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Hero / Converter Section -->
+      <section class="card converter-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Convert Audio to MIDI</h2>
+            <p class="card-desc">Upload any MP3 or audio file to transcribe musical notes into standard MIDI. Works immediately on Phone & PC.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btnTryDemo" title="Generate and convert an instant C Major melody">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Try Sample Demo
+          </button>
+        </div>
+
+        <!-- Dropzone Area -->
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.ogg,.flac,.m4a" class="file-input-hidden">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <h3 class="dropzone-title">Click to upload or drag & drop audio</h3>
+            <p class="dropzone-subtitle">Supported formats: MP3, WAV, OGG, FLAC, M4A, AAC (Max 50MB)</p>
+            <div class="selected-file-badge" id="selectedFileInfo" style="display: none;">
+              <span id="selectedFileName">audio.mp3</span>
+              <span class="badge-size" id="selectedFileSize">0 MB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversion Settings Options -->
+        <div class="settings-grid">
+          <div class="form-group">
+            <label for="selectMode">Detection Mode</label>
+            <select id="selectMode" class="form-select">
+              <option value="polyphonic" selected>Polyphonic (Chords + Melody)</option>
+              <option value="melody">Melody Lead (Monophonic Solo)</option>
+              <option value="bass">Bassline Focus (Low Frequency)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="inputBpm">Tempo (BPM): <span id="bpmVal">120</span></label>
+            <input type="range" id="inputBpm" min="60" max="220" value="120" class="form-range">
+          </div>
+
+          <div class="form-group">
+            <label for="inputSensitivity">Sensitivity: <span id="sensVal">Medium (0.50)</span></label>
+            <input type="range" id="inputSensitivity" min="0.1" max="1.0" step="0.05" value="0.5" class="form-range">
+          </div>
+
+          <div class="form-group">
+            <label for="selectInstrument">MIDI Instrument</label>
+            <select id="selectInstrument" class="form-select">
+              <option value="0">Acoustic Grand Piano</option>
+              <option value="4">Electric Piano 1</option>
+              <option value="19">Church Organ</option>
+              <option value="24">Acoustic Guitar (nylon)</option>
+              <option value="32">Acoustic Bass</option>
+              <option value="40">Violin</option>
+              <option value="56">Trumpet</option>
+              <option value="73">Flute</option>
+              <option value="80">Lead 1 (Square wave synth)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conversion Action -->
+        <div class="action-bar">
+          <button class="btn btn-primary btn-lg" id="btnConvert" disabled>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+            </svg>
+            Convert Audio to MIDI Now
+          </button>
+        </div>
+
+        <!-- Progress & Live Conversion Status -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+          <div class="progress-status" id="progressStatus">Transcribing audio frequencies...</div>
+        </div>
+
+        <!-- Immediate Download Showcase Alert (Shown when converted) -->
+        <div class="instant-result-banner" id="instantResultBanner" style="display: none;">
+          <div class="result-details">
+            <div class="result-icon-check">✓</div>
+            <div>
+              <h4 id="resultTitle">Conversion Completed!</h4>
+              <p id="resultMeta">Transcribed 0 notes • Ready for download</p>
+            </div>
+          </div>
+          <div class="result-actions">
+            <a href="#" id="btnImmediateDownloadMidi" class="btn btn-success btn-lg" download>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download .MID Immediately
+            </a>
+            <a href="#" id="btnImmediateDownloadAudio" class="btn btn-outline" download>
+              Download Original Audio
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- File System Explorer Section -->
+      <section class="card filesystem-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">File System Storage</h2>
+            <p class="card-desc">All converted MIDI and uploaded audio tracks stored on the system. Download anytime on PC, iPhone, or Android.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btnRefreshFiles">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <div class="file-list-container" id="fileListContainer">
+          <div class="empty-state" id="emptyState">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+              <polyline points="13 2 13 9 20 9"></polyline>
+            </svg>
+            <p>No audio files converted yet. Upload a track or click "Try Sample Demo" above!</p>
+          </div>
+          <div class="file-cards-grid" id="fileCardsGrid">
+            <!-- Dynamically populated files -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Mobile-Optimized Audio Player Dock -->
+    <div class="audio-player-dock" id="audioPlayerDock" style="display: none;">
+      <div class="dock-content">
+        <div class="dock-info">
+          <span class="dock-title" id="dockAudioTitle">Audio Preview</span>
+          <span class="dock-time" id="dockAudioTime">0:00</span>
+        </div>
+        <audio id="globalAudioPlayer" controls class="dock-audio-control"></audio>
+        <button class="btn-close-dock" id="btnCloseDock" title="Close Player">✕</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Audio to MIDI Full-Stack System • Powered by Fast Signal Processing & Modern Web APIs • Immediate Mobile & PC Download Ready</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
